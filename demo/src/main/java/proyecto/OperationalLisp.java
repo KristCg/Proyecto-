@@ -11,37 +11,75 @@ public class OperationalLisp {
 
     public int interpretar(String expresion){
         expresion = expresion.trim();
-
-        if (expresion.startsWith("(+") && expresion.endsWith(")")){
-            expresion = expresion.substring(2, expresion.length() - 1);
-            List<String> tokens = tokenizer.tokenize(expresion);
-            return procesarSuma(tokens);
+        switch (expresion) {
+            case "+":
+            if (expresion.startsWith("(+") && expresion.endsWith(")")){
+                expresion = expresion.substring(2, expresion.length() - 1);
+                List<String> tokens = tokenizer.tokenize(expresion);
+                return procesarSuma(tokens);
                 } else {
                     throw new IllegalArgumentException("Expresión no válida: " + expresion);
                 }
+            case "-":
+            if (expresion.startsWith("(-") && expresion.endsWith(")")){
+                expresion = expresion.substring(2, expresion.length() - 1);
+                List<String> tokens = tokenizer.tokenize(expresion);
+                return procesarResta(tokens);
+                } else {
+                    throw new IllegalArgumentException("Expresión no válida: " + expresion);
+                }
+            case "*":
+            if (expresion.startsWith("(*") && expresion.endsWith(")")){
+                expresion = expresion.substring(2, expresion.length() - 1);
+                List<String> tokens = tokenizer.tokenize(expresion);
+                return procesarMultiplicacion(tokens);
+                } else {
+                    throw new IllegalArgumentException("Expresión no válida: " + expresion);
+                }
+            case "/":
+            if (expresion.startsWith("(/") && expresion.endsWith(")")){
+                expresion = expresion.substring(2, expresion.length() - 1);
+                List<String> tokens = tokenizer.tokenize(expresion);
+                return procesarDivision(tokens);
+                } else {
+                throw new IllegalArgumentException("Expresión no válida: " + expresion);
+                }
+        
+            default:
+                break;
+        }
+        return 0;
+
+        /* if (expresion.startsWith("(+") && expresion.endsWith(")")){
+            expresion = expresion.substring(2, expresion.length() - 1);
+            List<String> tokens = tokenizer.tokenize(expresion);
+            return procesarSuma(tokens);
+            } else {
+                throw new IllegalArgumentException("Expresión no válida: " + expresion);
+            }
         if (expresion.startsWith("(-") && expresion.endsWith(")")){
             expresion = expresion.substring(2, expresion.length() - 1);
             List<String> tokens = tokenizer.tokenize(expresion);
             return procesarResta(tokens);
-                } else {
-                    throw new IllegalArgumentException("Expresión no válida: " + expresion);
-                }
+            } else {
+                throw new IllegalArgumentException("Expresión no válida: " + expresion);
+            }
         if (expresion.startsWith("(*") && expresion.endsWith(")")){
             expresion = expresion.substring(2, expresion.length() - 1);
             List<String> tokens = tokenizer.tokenize(expresion);
             return procesarMultiplicacion(tokens);
-                } else {
-                    throw new IllegalArgumentException("Expresión no válida: " + expresion);
-                }
+            } else {
+                throw new IllegalArgumentException("Expresión no válida: " + expresion);
+            }
         if (expresion.startsWith("(/") && expresion.endsWith(")")){
             expresion = expresion.substring(2, expresion.length() - 1);
             List<String> tokens = tokenizer.tokenize(expresion);
             return procesarDivision(tokens);
-                } else {
-                    throw new IllegalArgumentException("Expresión no válida: " + expresion);
-                }
+            } else {
+            throw new IllegalArgumentException("Expresión no válida: " + expresion);
+            }
 
-    }
+    } */
     private int procesarSuma(List<String> tokens){
         int suma = 0;
         for(String token : tokens){
