@@ -2,11 +2,11 @@ package proyecto;
 
 import java.util.*;
 
-public class OperationalLisp {
+public class AritmeticasLisp {
     private Tokenizer tokenizer;
     
 
-    public OperationalLisp(Tokenizer tokenizer) {
+    public AritmeticasLisp(Tokenizer tokenizer) {
         this.tokenizer = tokenizer;
     }
 
@@ -24,9 +24,9 @@ public class OperationalLisp {
     Stack<Object> stack = new Stack<>();
 
     for (String token : tokens) {
-        token = token.trim(); // Elimina espacios en blanco
+        token = token.trim(); 
 
-        if (token.isEmpty()) continue; // Ignora tokens vacíos
+        if (token.isEmpty()) continue; 
 
         if (token.equals(")")) {
             List<Integer> operandos = new ArrayList<>();
@@ -48,7 +48,7 @@ public class OperationalLisp {
             try {
                 stack.push(Integer.parseInt(token));
             } catch (NumberFormatException e) {
-                stack.push(token); // Si es operador, lo guardamos
+                stack.push(token); 
             }
         }
     }
@@ -80,13 +80,14 @@ public class OperationalLisp {
 
     public static void main(String[] args) {
         Tokenizer tokenizer = new Tokenizer();
-        OperationalLisp interprete = new OperationalLisp(tokenizer);
+        AritmeticasLisp interprete = new AritmeticasLisp(tokenizer);
 
-        // Ejemplos de uso
         System.out.println(interprete.interpretar("(+ 1 2 3)"));  // 6
         System.out.println(interprete.interpretar("(- 3 2 1)")); // 4
         System.out.println(interprete.interpretar("(* 2 3)"));    // 6
         System.out.println(interprete.interpretar("(/ 9 3)"));   // 3
         System.out.println(interprete.interpretar("(+ (* 2 3) 4)")); // 10
+        System.out.println(interprete.interpretar("(* (+ 2 3) (/ 9 3) (- 5 3) 4)")); // 5 * 3 * 2 * 4 = 120
+        System.out.println(interprete.interpretar("(+ (- 4 (* 1 1) 2) 5 9)")); // 15
     }
 }
