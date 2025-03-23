@@ -1,23 +1,26 @@
+package proyecto;
+
 import java.util.List;
 
-public class Condicionales{
- 
+public class Condicionales {
+
     public static Object evaluateConditional(List<Object> expression) {
         if (expression.size() < 2 || expression.size() > 3) {
-            throw new RuntimeException("La expresión condicional debe tener 2 o 3 elementos.");
+            return null;
         }
 
         Object condition = expression.get(0);
         boolean isTrue = isTrue(condition);
 
         if (isTrue) {
-            return expression.get(1); 
+            return expression.get(1);
         } else if (expression.size() == 3) {
-            return expression.get(2); 
+            return expression.get(2);
         } else {
             return null;
         }
     }
+
     private static boolean isTrue(Object value) {
         if (value instanceof Boolean) {
             return (Boolean) value;
@@ -29,4 +32,4 @@ public class Condicionales{
             return value != null;
         }
     }
-    }
+}
