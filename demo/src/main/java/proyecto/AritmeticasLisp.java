@@ -2,81 +2,45 @@ package proyecto;
 
 import java.util.*;
 
-public class AritmeticasLisp {
-    private Tokenizer tokenizer;
-    
-
+public class AritmeticasLisp extends LispEvaluador {
     public AritmeticasLisp(Tokenizer tokenizer) {
-        this.tokenizer = tokenizer;
+        super(tokenizer);
     }
 
-    public int interpretar(String expresion) {
-        expresion = expresion.trim();
-        if (!expresion.startsWith("(") || !expresion.endsWith(")")) {
-            throw new IllegalArgumentException("Expresión no válida: " + expresion);
-        }
-        
-        List<String> tokens = tokenizer.tokenize(expresion);
-        return evaluar(tokens);
-    }
-
-    private int evaluar(List<String> tokens) {
-    Stack<Object> stack = new Stack<>();
-
-    for (String token : tokens) {
-        token = token.trim(); 
-
-        if (token.isEmpty()) continue; 
-
-        if (token.equals(")")) {
-            List<Integer> operandos = new ArrayList<>();
-            String operador = "";
-
-            while (!stack.isEmpty()) {
-                Object elemento = stack.pop();
-                if (elemento instanceof String) {
-                    operador = ((String) elemento).trim();
-                    break;
-                } else {
-                    operandos.add(0, (Integer) elemento);
-                }
-            }
-
-            int resultado = calcularOperacion(operador, operandos);
-            stack.push(resultado);
-        } else if (!token.equals("(")) {
-            try {
-                stack.push(Integer.parseInt(token));
-            } catch (NumberFormatException e) {
-                stack.push(token); 
-            }
-        }
-    }
-
-    if (stack.size() != 1 || !(stack.peek() instanceof Integer)) {
-        throw new IllegalArgumentException("Expresión mal formada.");
-        }
-        return (Integer) stack.pop();
-    }
-    private int calcularOperacion(String operador, List<Integer> operandos) {
-        if (operandos.isEmpty()) {
-            throw new IllegalArgumentException("No hay operandos para la operación " + operador);
-        }
-
+    @Override
+    protected Object calcularOperacion(String operador, List<Object> operandos) {
+        int resultado;
         switch (operador) {
             case "+":
-                return operandos.stream().mapToInt(Integer::intValue).sum();
+                resultado = 0;
+                for (Object op : operandos) resultado += (int) op;
+                return resultado;
+
             case "-":
-                return operandos.stream().reduce((a, b) -> a - b).orElseThrow();
+                if (operandos.size() == 1) return -(int) operandos.get(0);
+                resultado = (int) operandos.get(0);
+                for (int i = 1; i < operandos.size(); i++) resultado -= (int) operandos.get(i);
+                return resultado;
+
             case "*":
-                return operandos.stream().reduce((a, b) -> a * b).orElseThrow();
+                resultado = 1;
+                for (Object op : operandos) resultado *= (int) op;
+                return resultado;
+
             case "/":
-                if (operandos.contains(0)) throw new ArithmeticException("División por cero.");
-                return operandos.stream().reduce((a, b) -> a / b).orElseThrow();
+                resultado = (int) operandos.get(0);
+                for (int i = 1; i < operandos.size(); i++) {
+                    if ((int) operandos.get(i) == 0) throw new ArithmeticException("División por cero.");
+                    resultado /= (int) operandos.get(i);
+                }
+                return resultado;
+
             default:
                 throw new IllegalArgumentException("Operador no válido: " + operador);
         }
     }
+
+
 
     public static void main(String[] args) {
         Tokenizer tokenizer = new Tokenizer();
