@@ -5,23 +5,21 @@ import java.util.List;
 public class Condicionales {
 
     public static Object evaluateConditional(List<Object> expression) {
-        if (expression.size() < 2 || expression.size() > 3) {
-            return null;
+        for (int i = 0; i < expression.size(); i += 2) {
+            Object condition = expression.get(i);
+            if (i + 1 >= expression.size()) {
+                return condition;
+            }
+            Object value = expression.get(i + 1);
+    
+            if (isTrue(condition)) {
+                return value;
+            }
         }
-
-        Object condition = expression.get(0);
-        boolean isTrue = isTrue(condition);
-
-        if (isTrue) {
-            return expression.get(1);
-        } else if (expression.size() == 3) {
-            return expression.get(2);
-        } else {
-            return null;
-        }
+        return null; 
     }
 
-    private static boolean isTrue(Object value) {
+    public static boolean isTrue(Object value) {
         if (value instanceof Boolean) {
             return (Boolean) value;
         } else if (value instanceof Number) {

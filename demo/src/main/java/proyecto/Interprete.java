@@ -4,14 +4,14 @@ import java.util.*;
 
 public class Interprete {
     private Tokenizer tokenizer;
-    private OperationalLisp operationalLisp;
+    private AritmeticasLisp aritmeticasLisp;
     private Condicionales condicionales;
     private Predicados predicados;
     private Map<String, Object> entorno; 
 
     public Interprete() {
         this.tokenizer = new Tokenizer();
-        this.operationalLisp = new OperationalLisp(tokenizer);
+        this.aritmeticasLisp = new AritmeticasLisp(tokenizer);
         this.condicionales = new Condicionales();
         this.predicados = new Predicados();
         this.entorno = new HashMap<>(); 
@@ -22,7 +22,7 @@ public class Interprete {
         return evaluate(tokens);
     }
 
-    private Object evaluate(List<String> tokens) {
+    public Object evaluate(List<String> tokens) {
         Stack<Object> stack = new Stack<>();
 
         for (String token : tokens) {
@@ -58,7 +58,7 @@ public class Interprete {
         return stack.pop();
     }
 
-    private Object evaluateExpression(List<Object> elements) {
+    public Object evaluateExpression(List<Object> elements) {
         if (elements.isEmpty()) {
             throw new IllegalArgumentException("Expresión vacía.");
         }
@@ -86,7 +86,7 @@ public class Interprete {
                         throw new IllegalArgumentException("Operando no válido: " + elemento);
                     }
                 }
-                return operationalLisp.calcularOperacion(operador, operandos);
+                return aritmeticasLisp.calcularOperacion(operador, operandos);
             case "print":
                 if (elements.size() < 2) {
                     return null;
@@ -112,7 +112,7 @@ public class Interprete {
         }
     }
 
-    private boolean esNumero(String token) {
+    public boolean esNumero(String token) {
         try {
             Integer.parseInt(token);
             return true;
@@ -121,7 +121,7 @@ public class Interprete {
         }
     }
 
-    private boolean esSimbolo(String token) {
+    public boolean esSimbolo(String token) {
         return !esNumero(token) && !token.equals("(") && !token.equals(")");
     }
 }
