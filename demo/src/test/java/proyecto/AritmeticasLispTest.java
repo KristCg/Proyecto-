@@ -1,7 +1,7 @@
 package proyecto;
 
 import org.junit.Test;
-inoort static org.junit.Assert.*;
+import static org.junit.Assert.*;
 
 import java.util.Arrays;
 

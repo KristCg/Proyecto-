@@ -5,26 +5,25 @@ import static org.junit.Assert.*;
 
 import java.util.Arrays;
 
-class ComparativosLispTest {
+public class ComparativasLispTest {
     @Test
     public void testOperacionesComparativas() {
         Tokenizer tokenizer = new Tokenizer();
-        ComparativosLisp comparativos = new ComparativosLisp(tokenizer);
+        ComparativasLisp comparativasLisp = new ComparativasLisp(tokenizer);
 
-        assertEquals("T", comparativos.calcularOperacion(">", Arrays.asList(5, 3)));
-        assertEquals(null, comparativos.calcularOperacion("<", Arrays.asList(7, 2)));
-        assertEquals("T", comparativos.calcularOperacion("=", Arrays.asList(4, 4)));
+        assertEquals("T", comparativasLisp.calcularOperacion(">", Arrays.asList(5, 3)));
+        assertEquals(null, comparativasLisp.calcularOperacion("<", Arrays.asList(7, 2)));
+        assertEquals("T", comparativasLisp.calcularOperacion("=", Arrays.asList(4, 4)));
     }
 
     @Test
     public void testComparacionConValoresInvalidos() {
         Tokenizer tokenizer = new Tokenizer();
-        ComparativosLisp comparativos = new ComparativosLisp(tokenizer);
+        ComparativasLisp comparativasLisp = new ComparativasLisp(tokenizer);
 
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            comparativos.calcularOperacion(">", Arrays.asList("A", 5));
+            comparativasLisp.calcularOperacion(">", Arrays.asList("A", 5));
         });
-
         assertTrue(exception.getMessage().contains("Operando no válido"));
     }
 }

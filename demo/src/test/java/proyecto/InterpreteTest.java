@@ -1,7 +1,6 @@
 package proyecto;
 
 import org.junit.Test;
-import java.util.List;
 
 public class InterpreteTest {
 
@@ -25,7 +24,7 @@ public class InterpreteTest {
     public void testInterpretarCondicional() {
         Interprete interprete = new Interprete();
         System.out.println("Probando expresión condicional:");
-        String expresion = "(cond ((> 10 15) "10 es mayor que 15") ((= 10 10) "10 es igual a 10") ((< 10 15) "10 es menor que 15") (t "Ninguna condición se cumplió"))";
+        String expresion = "(cond ((> 10 15) \"10 es mayor que 15\") ((= 10 10) \"10 es igual a 10\") ((< 10 15) \"10 es menor que 15\") (t \"Ninguna condición se cumplió\"))";
         Object resultado = interprete.interprete(expresion);
         System.out.println("Resultado: " + resultado);
 }

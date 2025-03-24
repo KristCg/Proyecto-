@@ -1,11 +1,9 @@
 package proyecto;
 
 import org.junit.Test;
-inoort static org.junit.Assert.*;
+import static org.junit.Assert.*;
 
-import java.util.Arrays;
-
-public class LogicasLispTest {
+public class LogicasLispTest{
     Tokenizer tokenizer = new Tokenizer();
     LogicasLisp logica = new LogicasLisp(tokenizer);
 
