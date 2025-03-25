@@ -13,9 +13,9 @@
 (setq b 6)
 (setq c 5)
   (cond
-    ((and (>= a b) (>= a c)) (print a))
-    ((and (>= b a) (>= b c)) (print b))
-    (t (print c)))
+    ((AND (>= a b) (>= a c)) (print a))
+    ((AND (>= b a) (>= b c)) (print b))
+    (T (print c)))
 	
 	
 ## Problema 4
