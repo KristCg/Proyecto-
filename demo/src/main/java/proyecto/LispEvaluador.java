@@ -46,7 +46,12 @@ public abstract class LispEvaluador {
                 try {
                     stack.push(Integer.parseInt(token));
                 } catch (NumberFormatException e) {
-                    stack.push(token);
+                    // Verificar si es un símbolo definido en el entorno
+                    if (entorno.containsKey(token)) {
+                        stack.push(entorno.get(token));
+                    } else {
+                        stack.push(token);
+                    }
                 }
             } else {
                 stack.push(token);
@@ -63,26 +68,69 @@ public abstract class LispEvaluador {
         if (elements.isEmpty()) {
             throw new IllegalArgumentException("Expresión vacía.");
         }
-
+    
         String operador = elements.get(0).toString();
         List<Object> operandos = elements.subList(1, elements.size());
-
-        // Manejo de operaciones básicas
+    
         switch (operador) {
             case "print":
                 if (operandos.size() < 1) return null;
-                Object valor = operandos.get(0);
-                System.out.println(valor);
-                return valor;
+                Object valorPrint = operandos.get(0);
+                if (valorPrint instanceof String) {
+                    valorPrint = evaluar(Collections.singletonList((String)valorPrint));
+                }
+                System.out.println(valorPrint);
+                return valorPrint;
+                
             case "setq":
-                if (operandos.size() != 2) return null;
-                String simbolo = operandos.get(0).toString();
-                Object valorAsignado = evaluar(Collections.singletonList(operandos.get(1).toString()));
-                entorno.put(simbolo, valorAsignado);
-                return valorAsignado;
+                if (operandos.size() != 2) {
+                    throw new IllegalArgumentException("setq requiere exactamente 2 argumentos");
+                }
+                
+                Object simboloObj = operandos.get(0);
+                if (!Predicados.esAtom(simboloObj)) {
+                    throw new IllegalArgumentException("El símbolo en setq debe ser atómico");
+                }
+                String simbolo = simboloObj.toString();
+                
+                Object valorAsignar = operandos.get(1);
+                Object valorEvaluado;
+                
+                if (valorAsignar instanceof List) {
+                    valorEvaluado = evaluarExpresion((List<Object>)valorAsignar);
+                } else if (valorAsignar instanceof String) {
+                    String strValor = (String)valorAsignar;
+                    if (entorno.containsKey(strValor)) {
+                        valorEvaluado = entorno.get(strValor);
+                    } else {
+                        try {
+                            valorEvaluado = Integer.parseInt(strValor);
+                        } catch (NumberFormatException e) {
+                            if (!Predicados.esAtom(strValor)) {
+                                throw new IllegalArgumentException("Valor no atómico en setq: " + strValor);
+                            }
+                            valorEvaluado = strValor;
+                        }
+                    }
+                } else {
+                    valorEvaluado = valorAsignar;
+                }
+                
+                entorno.put(simbolo, valorEvaluado);
+                return valorEvaluado;
+                
             default:
                 return calcularOperacion(operador, operandos);
         }
+    }
+    
+    // Método auxiliar para convertir List<Object> a List<String>
+    private List<String> convertToListOfStrings(List<?> list) {
+        List<String> result = new ArrayList<>();
+        for (Object item : list) {
+            result.add(item.toString());
+        }
+        return result;
     }
 
     protected abstract Object calcularOperacion(String operador, List<Object> operandos);

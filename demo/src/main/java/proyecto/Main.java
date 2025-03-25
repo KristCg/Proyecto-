@@ -9,7 +9,7 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
         // Ruta al archivo Lisp (cambiar por la ruta correcta)
-        String rutaArchivo = "ProblemasPresentacionProyecto.txt";
+        String rutaArchivo = "C:\\Users\\User\\OneDrive\\Documentos\\UVG\\4to semestre\\Algoritmo y estructura de datos\\Proyecto-\\demo\\src\\main\\java\\proyecto\\ProblemasPresentacionProyecto.txt";
         
         // Crear el tokenizer y el intérprete
         Tokenizer tokenizer = new Tokenizer();
