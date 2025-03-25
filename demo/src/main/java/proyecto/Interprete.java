@@ -36,14 +36,15 @@ public class Interprete extends LispEvaluador {
             case "OR":
             case "NOT":
                 return logicas.calcularOperacion(operador, operandos);
-            case "COND":
-            for (Object clause : operandos) {
-                if (!(clause instanceof List)) {
-                    throw new IllegalArgumentException("Cada cláusula cond debe ser una lista");
+
+            case "cond":
+                for (Object clause : operandos) {
+                    if (!(clause instanceof List)) {
+                        throw new IllegalArgumentException("Cada cláusula cond debe ser una lista");
+                    }
                 }
-            }
-            return Condicionales.evaluateConditional(operandos, this);
-            case "atom":
+                return Condicionales.evaluateConditional(operandos, this);
+            case "ATOM":
                 if (operandos.size() != 1) return null;
                 return predicados.esAtom(operandos.get(0));
             default:

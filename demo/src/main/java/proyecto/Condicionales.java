@@ -5,12 +5,15 @@ import java.util.List;
 public class Condicionales {
     
     public static Object evaluateConditional(List<Object> clauses, LispEvaluador evaluador) {
+        // Caso base: si no hay cláusulas, retornar null (NIL)
         if (clauses.isEmpty()) {
             return null;
         }
 
+        // Tomar la primera cláusula
         Object firstClause = clauses.get(0);
         
+        // Verificar que sea una lista
         if (!(firstClause instanceof List)) {
             throw new IllegalArgumentException("Cada cláusula cond debe ser una lista");
         }
@@ -18,26 +21,23 @@ public class Condicionales {
         List<Object> clause = (List<Object>) firstClause;
         
         // Caso especial para el 'else' (T o TRUE)
-        if (clause.size() >= 1 && isTrueSymbol(clause.get(0))) {
-            return evaluarExpresionCond(clause.size() > 1 ? clause.get(1) : clause.get(0), evaluador);
+        if (clause.size() == 1 && isTrueSymbol(clause.get(0))) {
+            return evaluarExpresionCond(clause.get(0), evaluador);
         }
 
-        // Evaluar condición normal
-        if (clause.size() < 1) {
-            throw new IllegalArgumentException("Cláusula cond incompleta");
-        }
-
+        // Evaluar la condición
         Object condition = clause.get(0);
         boolean conditionResult = evaluarCondicion(condition, evaluador);
 
         if (conditionResult) {
+            // Si la condición es verdadera, evaluar y retornar el resultado
             Object result = clause.size() > 1 ? clause.get(1) : condition;
             return evaluarExpresionCond(result, evaluador);
         } else {
+            // Llamada recursiva con las cláusulas restantes
             return evaluateConditional(clauses.subList(1, clauses.size()), evaluador);
         }
     }
-
 
     private static boolean isTrueSymbol(Object condition) {
         return (condition instanceof String && 

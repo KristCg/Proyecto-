@@ -12,11 +12,6 @@
 (setq a 10)
 (setq b 6)
 (setq c 5)
-  (cond 
-    ((AND (>= a b) (>= a c)) (print a))
-    ((AND (>= b a) (>= b c)) (print b))
-    (T (print c)))
-
   (cond
     ((AND (>= a b) (>= a c)) (print a))
     ((AND (>= b a) (>= b c)) (print b))
