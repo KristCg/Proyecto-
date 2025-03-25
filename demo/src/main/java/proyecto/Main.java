@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        String rutaArchivo = "C:\\Users\\User\\OneDrive\\Documentos\\UVG\\4to semestre\\Algoritmo y estructura de datos\\Proyecto-\\demo\\src\\main\\java\\proyecto\\ProblemasPresentacionProyecto.txt";
+        String rutaArchivo = "C:\\Users\\Admin\\Documents\\Yio\\U\\Proyecto-\\demo\\src\\main\\java\\proyecto\\ProblemasPresentacionProyecto.txt";
         
         Tokenizer tokenizer = new Tokenizer();
         Interprete interprete = new Interprete(tokenizer);
@@ -48,11 +48,29 @@ public class Main {
         String linea;
         StringBuilder expresionActual = new StringBuilder();
         int nivelParentesis = 0;
+        boolean enComentarioBloque = false;
         
         while ((linea = lector.readLine()) != null) {
             linea = linea.trim();
-            if (linea.isEmpty() || linea.startsWith(";")) {
-                continue; // Ignorar líneas vacías y comentarios
+            
+            if (linea.startsWith("##") || linea.isEmpty()) {
+                continue;
+            }
+            
+            if (linea.contains(";")) {
+                linea = linea.substring(0, linea.indexOf(';')).trim();
+            }
+            
+            if (linea.startsWith("#|")) {
+                enComentarioBloque = true;
+                continue;
+            }
+            if (linea.endsWith("|#")) {
+                enComentarioBloque = false;
+                continue;
+            }
+            if (enComentarioBloque) {
+                continue;
             }
             
             for (char c : linea.toCharArray()) {
@@ -66,7 +84,10 @@ public class Main {
             expresionActual.append(linea).append(" ");
             
             if (nivelParentesis == 0 && expresionActual.length() > 0) {
-                expresiones.add(expresionActual.toString().trim());
+                String expresionCompleta = expresionActual.toString().trim();
+                if (!expresionCompleta.isEmpty()) {
+                    expresiones.add(expresionCompleta);
+                }
                 expresionActual = new StringBuilder();
             }
         }

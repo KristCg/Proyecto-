@@ -4,8 +4,8 @@
 
 
 ## Problema 2
-(setq x (+ 10 (* 3 3) 2 (+ 20 (- 10 5)) ))
-(print x)
+(setq h (+ 10 (* 3 3) 2 (+ 20 (- 10 5)) ))
+(print h)
 
 
 ## Problema 3

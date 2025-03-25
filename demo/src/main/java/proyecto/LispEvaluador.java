@@ -5,6 +5,47 @@ import java.util.*;
 public abstract class LispEvaluador {
     protected Tokenizer tokenizer;
     protected Map<String, Object> entorno;
+    protected Map<String, FuncionDefinida> funcionesDefinidas;
+
+    protected static class FuncionDefinida {
+        List<String> parametros;
+        List<Object> cuerpo;
+        
+        public FuncionDefinida(List<String> parametros, List<Object> cuerpo) {
+            this.parametros = parametros;
+            this.cuerpo = cuerpo;
+        }
+        
+        public Object ejecutar(LispEvaluador evaluador, List<Object> argumentos) {
+            if (parametros.size() != argumentos.size()) {
+                throw new IllegalArgumentException("Número incorrecto de argumentos para la función");
+            }
+            
+            Map<String, Object> entornoOriginal = new HashMap<>(evaluador.entorno);
+            
+            try {
+                for (int i = 0; i < parametros.size(); i++) {
+                    evaluador.entorno.put(parametros.get(i), argumentos.get(i));
+                }
+                Object resultado = null;
+                for (Object expresion : cuerpo) {
+                    if (expresion instanceof String) {
+                        resultado = evaluador.evaluar(Collections.singletonList((String) expresion));
+                    } else if (expresion instanceof List) {
+                        // Convertir List<Object> a List<String> para evaluar
+                        List<String> tokens = new ArrayList<>();
+                        for (Object item : (List<?>) expresion) {
+                            tokens.add(item.toString());
+                        }
+                        resultado = evaluador.evaluar(tokens);
+                    }
+                }
+                return resultado;
+            } finally {
+                evaluador.entorno = entornoOriginal;
+            }
+        }
+    }
 
     public LispEvaluador(Tokenizer tokenizer) {
         this.tokenizer = tokenizer;
@@ -36,7 +77,7 @@ public abstract class LispEvaluador {
                 if (stack.isEmpty()) {
                     throw new IllegalArgumentException("Paréntesis no balanceados");
                 }
-                stack.pop(); // Remove "("
+                stack.pop(); 
                 
                 Object result = evaluarExpresion(elements);
                 stack.push(result);
@@ -46,7 +87,6 @@ public abstract class LispEvaluador {
                 try {
                     stack.push(Integer.parseInt(token));
                 } catch (NumberFormatException e) {
-                    // Verificar si es un símbolo definido en el entorno
                     if (entorno.containsKey(token)) {
                         stack.push(entorno.get(token));
                     } else {
@@ -120,7 +160,6 @@ public abstract class LispEvaluador {
                 return valorEvaluado;
 
             case "cond":
-                // Verificar que cada cláusula sea una lista
                 for (Object clause : operandos) {
                     if (!(clause instanceof List)) {
                         throw new IllegalArgumentException("Cada cláusula cond debe ser una lista");
@@ -132,8 +171,29 @@ public abstract class LispEvaluador {
                 return calcularOperacion(operador, operandos);
         }
     }
+
+    private Object definirFuncion(List<Object> operandos) {
+        if (operandos.size() < 3) {
+            throw new IllegalArgumentException("defun requiere nombre, parámetros y cuerpo");
+        }
+        
+        String nombreFuncion = operandos.get(0).toString();
+        
+        if (!(operandos.get(1) instanceof List)) {
+            throw new IllegalArgumentException("Los parámetros deben ser una lista");
+        }
+        List<?> parametrosList = (List<?>) operandos.get(1);
+        List<String> parametros = new ArrayList<>();
+        for (Object param : parametrosList) {
+            parametros.add(param.toString());
+        }
+        
+        List<Object> cuerpo = new ArrayList<>(operandos.subList(2, operandos.size()));
+        
+        funcionesDefinidas.put(nombreFuncion, new FuncionDefinida(parametros, cuerpo));
+        return nombreFuncion;
+    }
     
-    // Método auxiliar para convertir List<Object> a List<String>
     private List<String> convertToListOfStrings(List<?> list) {
         List<String> result = new ArrayList<>();
         for (Object item : list) {

@@ -18,6 +18,10 @@ public class Interprete extends LispEvaluador {
         this.predicados = new Predicados();
     }
 
+    public Map<String, Object> getEntorno() {
+        return entorno;
+    }
+    
     @Override
     protected Object calcularOperacion(String operador, List<Object> operandos) {
         switch (operador.toUpperCase()) {
