@@ -9,34 +9,35 @@ public class Condicionales {
             return null;
         }
 
-        for (Object clause : clauses) {
-            if (!(clause instanceof List)) {
-                throw new IllegalArgumentException("Cada cláusula cond debe ser una lista");
-            }
-
-            List<Object> conditionAndResult = (List<Object>) clause;
-            if (conditionAndResult.isEmpty()) {
-                continue;
-            }
-
-            Object condition = conditionAndResult.get(0);
-            Object result = conditionAndResult.size() > 1 ? conditionAndResult.get(1) : condition;
-
-            // Evaluar la condición
-            boolean conditionResult;
-            if (isTrueSymbol(condition)) {
-                conditionResult = true;
-            } else {
-                conditionResult = evaluarCondicion(condition, evaluador);
-            }
-
-            if (conditionResult) {
-                return evaluarExpresionCond(result, evaluador);
-            }
-        }
+        Object firstClause = clauses.get(0);
         
-        return null;
+        if (!(firstClause instanceof List)) {
+            throw new IllegalArgumentException("Cada cláusula cond debe ser una lista");
+        }
+
+        List<Object> clause = (List<Object>) firstClause;
+        
+        // Caso especial para el 'else' (T o TRUE)
+        if (clause.size() >= 1 && isTrueSymbol(clause.get(0))) {
+            return evaluarExpresionCond(clause.size() > 1 ? clause.get(1) : clause.get(0), evaluador);
+        }
+
+        // Evaluar condición normal
+        if (clause.size() < 1) {
+            throw new IllegalArgumentException("Cláusula cond incompleta");
+        }
+
+        Object condition = clause.get(0);
+        boolean conditionResult = evaluarCondicion(condition, evaluador);
+
+        if (conditionResult) {
+            Object result = clause.size() > 1 ? clause.get(1) : condition;
+            return evaluarExpresionCond(result, evaluador);
+        } else {
+            return evaluateConditional(clauses.subList(1, clauses.size()), evaluador);
+        }
     }
+
 
     private static boolean isTrueSymbol(Object condition) {
         return (condition instanceof String && 

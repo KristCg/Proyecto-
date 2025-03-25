@@ -20,7 +20,7 @@ public class Interprete extends LispEvaluador {
 
     @Override
     protected Object calcularOperacion(String operador, List<Object> operandos) {
-        switch (operador) {
+        switch (operador.toUpperCase()) {
             case "+":
             case "-":
             case "*":
@@ -36,12 +36,12 @@ public class Interprete extends LispEvaluador {
             case "OR":
             case "NOT":
                 return logicas.calcularOperacion(operador, operandos);
-            case "cond":
-                for (Object clause : operandos) {
-                    if (!(clause instanceof List)) {
-                        throw new IllegalArgumentException("Cada cláusula cond debe ser una lista. Formato: (cond (condición resultado) ...)");
-                    }
+            case "COND":
+            for (Object clause : operandos) {
+                if (!(clause instanceof List)) {
+                    throw new IllegalArgumentException("Cada cláusula cond debe ser una lista");
                 }
+            }
             return Condicionales.evaluateConditional(operandos, this);
             case "atom":
                 if (operandos.size() != 1) return null;

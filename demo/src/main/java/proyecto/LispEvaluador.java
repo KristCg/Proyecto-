@@ -118,7 +118,16 @@ public abstract class LispEvaluador {
                 
                 entorno.put(simbolo, valorEvaluado);
                 return valorEvaluado;
-                
+
+            case "cond":
+                // Verificar que cada cláusula sea una lista
+                for (Object clause : operandos) {
+                    if (!(clause instanceof List)) {
+                        throw new IllegalArgumentException("Cada cláusula cond debe ser una lista");
+                    }
+                }
+                return Condicionales.evaluateConditional(operandos, this);
+
             default:
                 return calcularOperacion(operador, operandos);
         }
